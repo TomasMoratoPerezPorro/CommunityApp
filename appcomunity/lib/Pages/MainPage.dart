@@ -12,6 +12,7 @@ class MainPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             EspaisWidget(),
+            ReservesWidget(),
           ],
         ),
       ),
@@ -24,25 +25,103 @@ class EspaisWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        child: Card(
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: Text("Espais"),
-              ),
-              Row(
-                children: <Widget>[
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.green, shape: BoxShape.circle),
-                    child: Icon(Icons.home),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Card(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text("Espais"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Card(
+                    color: Colors.grey[100],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              color: Colors.green, shape: BoxShape.circle),
+                          child: Icon(Icons.home),
+                        ),
+                        Text("TERRAT"),
+                        Container(
+                          margin: EdgeInsets.only(left: 200),
+                          color: Colors.green,
+                          height: 40,
+                          width: 10,
+                        )
+                      ],
+                    ),
                   ),
-                  Text("TERRAT"),
-                ],
-              )
-            ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  height: 50,
+                  width: 50,
+                  decoration:
+                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                  child: Icon(Icons.add),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+}
+
+
+class ReservesWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Card(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text("Reserves"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Card(
+                    color: Colors.grey[100],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              color: Colors.green, shape: BoxShape.circle),
+                          child: Icon(Icons.home),
+                        ),
+                        Text("TERRAT"),
+                        Container(
+                          margin: EdgeInsets.only(left: 200),
+                          color: Colors.green,
+                          height: 40,
+                          width: 10,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  height: 50,
+                  width: 50,
+                  decoration:
+                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                  child: Icon(Icons.add),
+                ),
+              ],
+            ),
           ),
         ));
   }
