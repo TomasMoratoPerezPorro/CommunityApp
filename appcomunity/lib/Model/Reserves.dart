@@ -19,7 +19,7 @@ class Reserves {
 }
 
 Stream<List<Reserves>> todoListSnapshots() {
-  return Firestore.instance.collection('Reserves').snapshots().map((QuerySnapshot query) {
+  return Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Reserves').snapshots().map((QuerySnapshot query) {
     final List<DocumentSnapshot> docs = query.documents;
     return docs.map((doc) => Reserves.fromFirestore(doc)).toList();
   });
