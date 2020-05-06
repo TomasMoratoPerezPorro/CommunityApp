@@ -31,16 +31,23 @@ class EspaisWidget extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Container(
-                  child: Text("Espais"),
+                  margin: EdgeInsets.only(top: 20),
+                  child: Text(
+                    "Espais",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Card(
                     color: Colors.grey[100],
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Container(
+                          margin: EdgeInsets.all(10),
                           height: 50,
                           width: 50,
                           decoration: BoxDecoration(
@@ -50,9 +57,13 @@ class EspaisWidget extends StatelessWidget {
                         Text("TERRAT"),
                         Container(
                           margin: EdgeInsets.only(left: 200),
-                          color: Colors.green,
-                          height: 40,
+                          height: 70,
                           width: 10,
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(5),
+                                  bottomRight: Radius.circular(5))),
                         )
                       ],
                     ),
@@ -72,7 +83,6 @@ class EspaisWidget extends StatelessWidget {
         ));
   }
 }
-
 
 class ReservesWidget extends StatelessWidget {
   @override
