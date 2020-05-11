@@ -9,7 +9,7 @@ class CommunityApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title:"CommunityApp",
-      home: TestPage(),
+      home: MainPage(),
       
     );
   }
@@ -20,7 +20,7 @@ class TestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<List<Reserves>>(
-        stream: todoListSnapshots(),
+        stream: reservesSnapshots(),
         builder: (BuildContext context, AsyncSnapshot<List<Reserves>> snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('ERROR: ${snapshot.error.toString()}'));
