@@ -9,7 +9,7 @@ class MainPage extends StatelessWidget {
         backgroundColor: Colors.blue,
       ),
       body: Container(
-        child: Column(
+        child: ListView(
           children: <Widget>[
             EspaisWidget(),
             ReservesWidget(),
@@ -28,7 +28,7 @@ class EspaisWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Card(
-            child: Column(
+            child: ListView(
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.only(top: 20),
@@ -51,11 +51,11 @@ class EspaisWidget extends StatelessWidget {
               return Center(child: Text("Waiting..."));
             case ConnectionState.active:
               List<Espais> espais = snapshot.data;
-                return ListView.builder(
-                  itemCount: espais.length,
-                  itemBuilder: (context,index){
-                    
-                  }
+                return ListView(
+                  children: <Widget>[
+                    for(int i=0;i<espais.length;i++)
+                      PastillaEspai(),
+                  ],
                 );
                 
                           
