@@ -28,7 +28,7 @@ class EspaisWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Card(
-            child: ListView(
+            child: Column(
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.only(top: 20),
@@ -52,9 +52,15 @@ class EspaisWidget extends StatelessWidget {
             case ConnectionState.active:
               List<Espais> espais = snapshot.data;
                 return ListView(
+                  shrinkWrap: true,
                   children: <Widget>[
                     for(int i=0;i<espais.length;i++)
                       PastillaEspai(),
+                      PastillaEspai(),
+                      PastillaEspai(),
+                      PastillaEspai(),
+                      PastillaEspai(),
+
                   ],
                 );
                 
