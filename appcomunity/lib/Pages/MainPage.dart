@@ -132,34 +132,34 @@ class ReservesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Card(
-            child: Column(
-              children: <Widget>[
-                Container(
+        child: Card(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Container(
                   child: Text("Reserves"),
                 ),
-                Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: GridView.count(
-                      physics: new NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      crossAxisCount: 2,
-                      children: <Widget>[
-                        for (int i = 0; i < 10; i++) ReservaItem()
-                      ],
-                    )),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  height: 50,
-                  width: 50,
-                  decoration:
-                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                  child: Icon(Icons.add),
-                ),
-              ],
-            ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: GridView.count(
+                    physics: new NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    children: <Widget>[
+                      for (int i = 0; i < 10; i++) ReservaItem()
+                    ],
+                  )),
+              Container(
+                margin: EdgeInsets.only(bottom: 20),
+                height: 50,
+                width: 50,
+                decoration:
+                    BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                child: Icon(Icons.add),
+              ),
+            ],
           ),
         ));
   }
