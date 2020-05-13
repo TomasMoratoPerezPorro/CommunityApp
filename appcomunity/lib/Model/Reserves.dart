@@ -27,46 +27,4 @@ Stream<List<Reserves>> reservesSnapshots() {
   });
 }
 
-class Espais {
-  String id;
-  String nom;
-  Timestamp limitIni;
-  Timestamp limitFinal;
-  
-  Espais(this.id, this.nom, this.limitIni, this.limitFinal);
-  Espais.fromFirestore(DocumentSnapshot docEspai) {
-    id = docEspai.documentID;
-    nom = docEspai.data['Name'];
-    limitIni = docEspai.data['Limit_ini'];
-    limitFinal = docEspai.data['Limit_final'];
-  }
-}
 
-Stream<List<Espais>> espaisSnapshots() {
-  return Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Espais').snapshots().map((QuerySnapshot query) {
-    final List<DocumentSnapshot> docsEspais = query.documents;
-    return docsEspais.map((docEspai) => Espais.fromFirestore(docEspai)).toList();
-  });
-}
-
-class Usuaris {
-  String id;
-  String nom;
-  DocumentReference comunitat;
-  String pis;
-  
-  Usuaris(this.id, this.nom, this.comunitat, this.pis);
-  Usuaris.fromFirestore(DocumentSnapshot docUsuari) {
-    id = docUsuari.documentID;
-    nom = docUsuari.data['Name'];
-    pis = docUsuari.data['Pis'];
-    comunitat = docUsuari.data['Comunitat'];
-  }
-}
-
-Stream<List<Usuaris>> usuarisSnapshots() {
-  return Firestore.instance.collection('Usuaris').snapshots().map((QuerySnapshot query) {
-    final List<DocumentSnapshot> docsUsuaris = query.documents;
-    return docsUsuaris.map((docUsuari) => Usuaris.fromFirestore(docUsuari)).toList();
-  });
-}
