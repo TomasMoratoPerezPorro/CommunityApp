@@ -27,4 +27,13 @@ Stream<List<Reserves>> reservesSnapshots() {
   });
 }
 
+Stream<String> reservesEspaiSnapshots(DocumentReference espai) {
+  return Firestore.instance.get().snapshots().map((QuerySnapshot query) {
+    final List<DocumentSnapshot> docsReserves = query.documents;
+    return docsReserves.map((docReserva) => Reserves.fromFirestore(docReserva)).toList();
+  });
+}
+
+
+
 

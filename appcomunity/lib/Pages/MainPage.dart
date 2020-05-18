@@ -208,11 +208,52 @@ class ReservaItem extends StatelessWidget {
         children: <Widget>[
           ListTile(
             leading: Icon(Icons.album, size: 50),
-            title: Text("${reserva.espai}"),
+            title: ReservaItemStringEspai(reserva: reserva),
             //   subtitle: Text(reserva.dataFinal),
           ),
         ],
       ),
+    );
+  }
+}
+
+class ReservaItemStringEspai extends StatelessWidget {
+  const ReservaItemStringEspai({
+    Key key,
+    @required this.reserva,
+  }) : super(key: key);
+
+  final Reserves reserva;
+
+  @override
+  Widget build(BuildContext context) {
+    StreamBuilder<List<Espais>>(
+      stream: espaisSnapshots(),
+      builder: (BuildContext context, AsyncSnapshot<List<Espais>> snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('ERROR: ${snapshot.error.toString()}'));
+        }
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            // Estem esperant el primer valor
+            return Center(child: Text("Waiting..."));
+          case ConnectionState.active:
+            List<Espais> espais = snapshot.data;
+            return Column(
+              children: <Widget>[
+                for (int i = 0; i < espais.length; i++)
+                  PastillaEspai(espai: espais[i]),
+              ],
+            );
+
+          // return Text("${snapshot.data.length}");
+          case ConnectionState.done:
+            return Center(child: Text("Done!"));
+          case ConnectionState.none:
+          default:
+            return Placeholder();
+        }
+      },
     );
   }
 }
