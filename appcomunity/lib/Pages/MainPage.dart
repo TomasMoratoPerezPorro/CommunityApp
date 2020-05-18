@@ -1,4 +1,5 @@
 import 'package:appcomunity/Model/Espais.dart';
+import 'package:appcomunity/Model/Reserves.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatelessWidget {
@@ -141,15 +142,41 @@ class ReservesWidget extends StatelessWidget {
                   child: Text("Reserves"),
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: GridView.count(
-                      physics: new NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      crossAxisCount: 2,
-                      children: <Widget>[
-                        for (int i = 0; i < 10; i++) ReservaItem()
-                      ],
-                    )),
+                  padding: const EdgeInsets.all(10),
+                  child: StreamBuilder<List<Reserves>>(
+                    stream: reservesSnapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Reserves>> snapshotReserves) {
+                      if (snapshotReserves.hasError) {
+                        return Center(
+                            child: Text(
+                                'ERROR: ${snapshotReserves.error.toString()}'));
+                      }
+                      switch (snapshotReserves.connectionState) {
+                        case ConnectionState.waiting:
+                          // Estem esperant el primer valor
+                          return Center(child: Text("Waiting..."));
+                        case ConnectionState.active:
+                          List<Reserves> reserves = snapshotReserves.data;
+                          return GridView.count(
+                            physics: new NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            crossAxisCount: 2,
+                            children: <Widget>[
+                              for (int i = 0; i < reserves.length; i++)
+                                ReservaItem(reserva: reserves[i]),
+                            ],
+                          );
+
+                        case ConnectionState.done:
+                          return Center(child: Text("Done!"));
+                        case ConnectionState.none:
+                        default:
+                          return Placeholder();
+                      }
+                    },
+                  ),
+                ),
                 Container(
                   margin: EdgeInsets.only(bottom: 20),
                   height: 50,
@@ -168,8 +195,10 @@ class ReservesWidget extends StatelessWidget {
 class ReservaItem extends StatelessWidget {
   const ReservaItem({
     Key key,
+    @required this.reserva,
   }) : super(key: key);
 
+  final Reserves reserva;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -177,10 +206,10 @@ class ReservaItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          const ListTile(
+          ListTile(
             leading: Icon(Icons.album, size: 50),
-            title: Text('Heart Shaker'),
-            subtitle: Text('TWICE'),
+            title: Text("${reserva.espai}"),
+            //   subtitle: Text(reserva.dataFinal),
           ),
         ],
       ),

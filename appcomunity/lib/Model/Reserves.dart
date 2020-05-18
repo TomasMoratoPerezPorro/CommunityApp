@@ -6,16 +6,16 @@ class Reserves {
   DocumentReference espai;
   DocumentReference usuari;
   bool compartir;
-  Timestamp dataIni;
-  Timestamp dataFinal;
+  DateTime dataIni;
+  DateTime dataFinal;
   
   Reserves(this.id, this.espai, this.dataIni, this.dataFinal, this.usuari, [this.compartir = true]);
   Reserves.fromFirestore(DocumentSnapshot docReserva) {
     id = docReserva.documentID;
     espai = docReserva.data['Espai'];
     usuari = docReserva.data['Usuari'];
-    dataIni = docReserva.data['Data_ini'];
-    dataFinal = docReserva.data['Data_final'];
+    dataIni = docReserva.data['Data_ini'].toDate();
+    dataFinal = docReserva.data['Data_final'].toDate();
     compartir = docReserva.data['Compartir'];
   }
 }
