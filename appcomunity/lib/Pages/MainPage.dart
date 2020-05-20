@@ -1,6 +1,7 @@
 import 'package:appcomunity/Model/Espais.dart';
 import 'package:appcomunity/Model/Reserves.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MainPage extends StatelessWidget {
   @override
@@ -199,6 +200,7 @@ class ReservaItem extends StatelessWidget {
   }) : super(key: key);
 
   final Reserves reserva;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -206,17 +208,46 @@ class ReservaItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.album, size: 50),
-            title: ReservaItemStringEspai(reserva: reserva),
-            //   subtitle: Text(reserva.dataFinal),
+          Icon(Icons.album, size: 50),
+          FutureBuilder<DocumentSnapshot>(
+            future: reserva.espai.get(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                DocumentSnapshot doc = snapshot.data;
+                String nomEspai = doc.data['Name'];
+                debugPrint(nomEspai);
+                debugPrint(reserva.espai.path.toString());
+
+                return Text(nomEspai);
+              } else {
+                // TODO: Mostrar ... ???
+                return Text('...');
+              }
+            },
           ),
+          FutureBuilder<DocumentSnapshot>(
+            future: reserva.usuari.get(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                DocumentSnapshot doc = snapshot.data;
+                String nomUsuari = doc.data['Name'];
+                debugPrint(nomUsuari);
+                debugPrint(reserva.usuari.path.toString());
+                return Text(nomUsuari);
+              } else {
+                // TODO: Mostrar ... ???
+                return Text('...');
+              }
+            },
+          ),
+          Text(reserva.dataIni.toString()),
         ],
       ),
     );
   }
 }
 
+/* 
 class ReservaItemStringEspai extends StatelessWidget {
   const ReservaItemStringEspai({
     Key key,
@@ -257,3 +288,4 @@ class ReservaItemStringEspai extends StatelessWidget {
     );
   }
 }
+ */
