@@ -1,5 +1,6 @@
 import 'package:appcomunity/Model/Espais.dart';
 import 'package:appcomunity/Model/Reserves.dart';
+import 'package:appcomunity/Pages/NewReservaPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -178,14 +179,16 @@ class ReservesWidget extends StatelessWidget {
                     },
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  height: 50,
-                  width: 50,
-                  decoration:
-                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                FloatingActionButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => NewReservaPage(),
+                      ),
+                    );
+                  },
                   child: Icon(Icons.add),
-                ),
+                )
               ],
             ),
           ),
