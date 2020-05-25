@@ -10,11 +10,13 @@ class NewReservaPage extends StatefulWidget {
 class _NewReservaPageState extends State<NewReservaPage> {
   TextEditingController _controller;
   DateTime pickedDate;
+  TimeOfDay time;
 
   @override
   void initState() {
     _controller = TextEditingController();
     pickedDate = DateTime.now();
+    time = TimeOfDay.now();
     super.initState();
   }
 
@@ -24,8 +26,6 @@ class _NewReservaPageState extends State<NewReservaPage> {
     super.dispose();
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,18 +34,64 @@ class _NewReservaPageState extends State<NewReservaPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[    
-              LlistaEspaisWidget(),                       
-              RaisedButton(
-                child: Text('Add Palabra'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
+            children: <Widget>[
+              LlistaEspaisWidget(),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: <Widget>[
+                      Text("Selecciona el dia:"),
+                      ListTile(
+                        title: Text(
+                            "Date: ${pickedDate.year}, ${pickedDate.month}, ${pickedDate.day}"),
+                        trailing: Icon(Icons.keyboard_arrow_down),
+                        onTap: _pickDate,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: <Widget>[
+                      Text("Selecciona la hora de inici:"),
+                      ListTile(
+                        title: Text("Date: ${time.hour}, ${time.minute}"),
+                        trailing: Icon(Icons.keyboard_arrow_down),
+                        onTap: _pickTime,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ));
   }
+
+  _pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: pickedDate,
+    );
+
+    if (date != null)
+      setState(() {
+        pickedDate = date;
+      });
+  }
+
+  _pickTime() async {
+    TimeOfDay t = await showTimePicker(context: context, initialTime: time);
+
+    if (t != null)
+      setState(() {
+        time = t;
+      });
+  }
 }
-
-
