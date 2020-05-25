@@ -1,5 +1,7 @@
 
+import 'package:appcomunity/Model/Espais.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Reserves {
   String id;
@@ -23,6 +25,22 @@ class Reserves {
   }
 }
 
+addReserva(DateTime pickedTime, TimeOfDay time, Espais selectedEspai, int selectedDuracio) {
+  /*
+  Firestore.instance.collection('todos').document().setData({
+    'what': text,
+    'done': false,
+  });
+  */
+  DateTime dataIni = DateTime(pickedTime.year, pickedTime.month, pickedTime.day, time.hour, time.minute);
+  //DocumentReference espaiRef = 
+  Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Reserves').add({
+    'Data_Ini': Timestamp.fromDate(dataIni),
+    'Data_Final': Timestamp.fromDate(dataIni.add(Duration(days: 0, hours: selectedDuracio, minutes: 0))),
+    'Espai': 'Comunitat/ePxrAIn3mpLvfJBvBKtZ/Espais/${selectedEspai.id}', 
+    'Usuari': 'Usuaris/rBusSKT1iicw0I2rUrhw',
+  });
+}
 
 Stream<List<Reserves>> reservesSnapshots() {
   return Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Reserves').snapshots().map((QuerySnapshot query) {

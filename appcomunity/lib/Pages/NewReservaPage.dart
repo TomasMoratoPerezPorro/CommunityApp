@@ -1,4 +1,5 @@
 import 'package:appcomunity/Model/Espais.dart';
+import 'package:appcomunity/Model/Reserves.dart';
 import 'package:appcomunity/Widgets/LlistaEspaisWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,11 +17,13 @@ class NewReservaProvider with ChangeNotifier {
  
 
   void setDate(DateTime date) {
+  //  print(date.toString());
     this.pickedDate = date;
     notifyListeners();
   }
 
   void setTime(TimeOfDay hora) {
+  //   print(hora.toString());
     this.time = hora;
     notifyListeners();
   }
@@ -28,6 +31,10 @@ class NewReservaProvider with ChangeNotifier {
   void setEspai(Espais espai){
     this.selectedEspai = espai;
     notifyListeners();
+  }
+
+  void saveReserva(){
+    addReserva(this.pickedDate,this.time,this.selectedEspai,this.selectedDuracio);
   }
 }
 
@@ -57,10 +64,25 @@ class FormNewReservaWidget extends StatelessWidget {
               FieldEspaiWidget(),
               FieldDiaWidget(),
               FieldHoraWidget(),
-              FieldDuracioWidget()
+              FieldDuracioWidget(),
+              SubmitButton()
             ],
           ),
         ));
+  }
+}
+
+class SubmitButton extends StatelessWidget {
+  const SubmitButton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final myProvider = Provider.of<NewReservaProvider>(context, listen: false);
+    return RaisedButton(onPressed: (){
+      
+    },);
   }
 }
 
