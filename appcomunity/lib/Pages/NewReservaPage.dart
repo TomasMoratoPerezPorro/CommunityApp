@@ -1,4 +1,6 @@
+import 'package:appcomunity/Widgets/LlistaEspaisWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewReservaPage extends StatefulWidget {
   @override
@@ -7,10 +9,12 @@ class NewReservaPage extends StatefulWidget {
 
 class _NewReservaPageState extends State<NewReservaPage> {
   TextEditingController _controller;
+  DateTime pickedDate;
 
   @override
   void initState() {
     _controller = TextEditingController();
+    pickedDate = DateTime.now();
     super.initState();
   }
 
@@ -20,29 +24,28 @@ class _NewReservaPageState extends State<NewReservaPage> {
     super.dispose();
   }
 
+ 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('New Reserva')),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: TextField(
-                controller: _controller,
-                onSubmitted: (what) {
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[    
+              LlistaEspaisWidget(),                       
+              RaisedButton(
+                child: Text('Add Palabra'),
+                onPressed: () {
                   Navigator.of(context).pop();
                 },
-              ),
-            ),
-            RaisedButton(
-              child: Text('Add Palabra'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
+              )
+            ],
+          ),
         ));
   }
 }
+
+
