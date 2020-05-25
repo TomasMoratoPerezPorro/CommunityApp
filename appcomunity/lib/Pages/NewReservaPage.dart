@@ -10,31 +10,31 @@ class NewReservaProvider with ChangeNotifier {
   Espais selectedEspai;
   int selectedDuracio = 1;
 
-  void setDuracio(int duracio){
+  void setDuracio(int duracio) {
     this.selectedDuracio = duracio;
     notifyListeners();
   }
- 
 
   void setDate(DateTime date) {
-  //  print(date.toString());
+    //  print(date.toString());
     this.pickedDate = date;
     notifyListeners();
   }
 
   void setTime(TimeOfDay hora) {
-  //   print(hora.toString());
+    //   print(hora.toString());
     this.time = hora;
     notifyListeners();
   }
 
-  void setEspai(Espais espai){
+  void setEspai(Espais espai) {
     this.selectedEspai = espai;
     notifyListeners();
   }
 
-  void saveReserva(){
-    addReserva(this.pickedDate,this.time,this.selectedEspai,this.selectedDuracio);
+  void saveReserva() {
+    addReserva(
+        this.pickedDate, this.time, this.selectedEspai, this.selectedDuracio);
   }
 }
 
@@ -80,9 +80,12 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myProvider = Provider.of<NewReservaProvider>(context, listen: false);
-    return RaisedButton(onPressed: (){
-      
-    },);
+    return RaisedButton(
+      child: Text("Submit"),
+      onPressed: () {
+        myProvider.saveReserva();
+      },
+    );
   }
 }
 
@@ -94,13 +97,14 @@ class FieldDuracioWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myProvider = Provider.of<NewReservaProvider>(context, listen: true);
-    Color getColor(int i){
-       if(myProvider.selectedDuracio==i){
-         return Colors.red;
-       }else{
-         return Colors.grey[350];
-       }
-     } 
+    Color getColor(int i) {
+      if (myProvider.selectedDuracio == i) {
+        return Colors.red;
+      } else {
+        return Colors.grey[350];
+      }
+    }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(10),

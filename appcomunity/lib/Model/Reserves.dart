@@ -34,11 +34,13 @@ addReserva(DateTime pickedTime, TimeOfDay time, Espais selectedEspai, int select
   */
   DateTime dataIni = DateTime(pickedTime.year, pickedTime.month, pickedTime.day, time.hour, time.minute);
   //DocumentReference espaiRef = 
+  final DocumentReference postRefEspai = Firestore.instance.document('Comunitat/ePxrAIn3mpLvfJBvBKtZ/Espais/${selectedEspai.id}');
+  final DocumentReference postRefUsuari = Firestore.instance.document('Usuaris/rBusSKT1iicw0I2rUrhw');
   Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Reserves').add({
     'Data_Ini': Timestamp.fromDate(dataIni),
     'Data_Final': Timestamp.fromDate(dataIni.add(Duration(days: 0, hours: selectedDuracio, minutes: 0))),
-    'Espai': 'Comunitat/ePxrAIn3mpLvfJBvBKtZ/Espais/${selectedEspai.id}', 
-    'Usuari': 'Usuaris/rBusSKT1iicw0I2rUrhw',
+    'Espai': postRefEspai,
+    'Usuari': postRefUsuari,
   });
 }
 
