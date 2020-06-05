@@ -3,6 +3,10 @@ import 'package:appcomunity/Model/Reserves.dart';
 import 'package:appcomunity/Pages/NewReservaPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+
+final Color mainColor = Color(0xFFff7f5c);
+final Color secondaryColor = Color(0xFFfff7f5);
 
 class MainPage extends StatelessWidget {
   @override
@@ -10,7 +14,7 @@ class MainPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("CommunityApp"),
-        backgroundColor: Colors.blue,
+        backgroundColor: mainColor,
       ),
       body: Container(
         child: ListView(
@@ -73,14 +77,6 @@ class EspaisWidget extends StatelessWidget {
                     }
                   },
                 ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  height: 50,
-                  width: 50,
-                  decoration:
-                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                  child: Icon(Icons.add),
-                ),
               ],
             ),
           ),
@@ -100,25 +96,18 @@ class PastillaEspai extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Card(
-        color: Colors.grey[100],
+        color: secondaryColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.all(10),
-              height: 50,
-              width: 50,
-              decoration:
-                  BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-              child: Icon(Icons.home),
-            ),
+            PastillaEspaiIcona(espai: espai.nom),
             Text(espai.nom),
             Container(
               margin: EdgeInsets.only(left: 200),
               height: 70,
               width: 10,
               decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: mainColor,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(5),
                       bottomRight: Radius.circular(5))),
@@ -130,8 +119,31 @@ class PastillaEspai extends StatelessWidget {
   }
 }
 
+class PastillaEspaiIcona extends StatelessWidget {
+  const PastillaEspaiIcona({
+    Key key,
+    @required this.espai,
+  }) : super(key: key);
+
+  final String espai;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      height: 50,
+      width: 50,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: mainColor)),
+      child: espai == "Piscina" ? Icon(Icons.pool) : Icon(Icons.beach_access),
+    );
+  }
+}
+
 class ReservesWidget extends StatelessWidget {
-   List<Reserves> reservasPerLogica;
+  List<Reserves> reservasPerLogica;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -142,7 +154,13 @@ class ReservesWidget extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Container(
-                  child: Text("Reserves"),
+                  margin: EdgeInsets.only(top: 20, bottom: 10),
+                  child: Text(
+                    "Reservas",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -208,14 +226,27 @@ class ReservaItem extends StatelessWidget {
 
   final Reserves reserva;
 
+  String formatDate(DateTime data) {
+    var newFormat = DateFormat("yMMMEd");
+    String updatedDt = newFormat.format(data);
+
+    return updatedDt;
+  }
+
+  String formatTime(DateTime data) {
+    var newFormat = DateFormat("jm");
+    String updatedDt = newFormat.format(data);
+
+    return updatedDt;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.yellow,
+      color: secondaryColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(Icons.album, size: 50),
           FutureBuilder<DocumentSnapshot>(
             future: reserva.espai.get(),
             builder: (context, snapshot) {
@@ -225,7 +256,17 @@ class ReservaItem extends StatelessWidget {
                 debugPrint(nomEspai);
                 debugPrint(reserva.espai.path.toString());
 
-                return Text(nomEspai);
+                return Column(
+                  children: <Widget>[
+                    PastillaEspaiIcona(espai: nomEspai),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: Text(nomEspai,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                );
               } else {
                 // TODO: Mostrar ... ???
                 return Text('...');
@@ -240,19 +281,49 @@ class ReservaItem extends StatelessWidget {
                 String nomUsuari = doc.data['Name'];
                 debugPrint(nomUsuari);
                 debugPrint(reserva.usuari.path.toString());
-                return Text(nomUsuari);
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 10, left: 10),
+                    child: Text(
+                      nomUsuari,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                );
               } else {
                 // TODO: Mostrar ... ???
                 return Text('...');
               }
             },
           ),
-          Text(reserva.dataIni.toString()),
+          Container(
+            margin: EdgeInsets.only(left:10),
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.calendar_today,size: 18,),
+                SizedBox(width:10),
+                Text(formatDate(reserva.dataIni)),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left:10),
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.access_time,size: 18,),
+                SizedBox(width:10),
+                Text(formatTime(reserva.dataIni)),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
+/* reserva.dataIni.toString() */
 
 /* 
 class ReservaItemStringEspai extends StatelessWidget {
