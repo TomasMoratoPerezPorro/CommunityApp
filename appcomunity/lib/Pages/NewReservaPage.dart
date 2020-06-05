@@ -5,10 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class NewReservaProvider with ChangeNotifier {
+  NewReservaProvider(reservesExistents) {
+    this.reservesExistents = reservesExistents;
+  }
+
   DateTime pickedDate = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
   Espais selectedEspai;
   int selectedDuracio = 1;
+  List<Reserves> reservesExistents;
+  bool coincidencia = false;
 
   void setDuracio(int duracio) {
     this.selectedDuracio = duracio;
@@ -19,6 +25,12 @@ class NewReservaProvider with ChangeNotifier {
     //  print(date.toString());
     this.pickedDate = date;
     notifyListeners();
+    coincidencia = comprobarDisponibilitat();
+    if(coincidencia){
+      this.coincidencia=coincidencia;
+      notifyListeners();
+    }
+
   }
 
   void setTime(TimeOfDay hora) {
@@ -36,26 +48,46 @@ class NewReservaProvider with ChangeNotifier {
     addReserva(
         this.pickedDate, this.time, this.selectedEspai, this.selectedDuracio);
   }
+
+  bool comprobarDisponibilitat() {
+    for (var i = 0; i < this.reservesExistents.length; i++) {
+      if (this.reservesExistents[i].dataIni.day == this.pickedDate.day) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 class NewReservaPage extends StatelessWidget {
+  const NewReservaPage({
+    Key key,
+    @required this.reserves,
+  }) : super(key: key);
+
+  final List<Reserves> reserves;
   @override
   Widget build(BuildContext context) {
+    print("OBJECTE RESERVAS PUSH: ${reserves[0].dataIni}");
     return Scaffold(
         appBar: AppBar(title: Text('New Reserva')),
-        body: FormNewReservaWidget());
+        body: FormNewReservaWidget(
+          reserves: reserves,
+        ));
   }
 }
 
 class FormNewReservaWidget extends StatelessWidget {
   const FormNewReservaWidget({
     Key key,
+    @required this.reserves,
   }) : super(key: key);
 
+  final List<Reserves> reserves;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<NewReservaProvider>(
-        create: (context) => NewReservaProvider(),
+        create: (context) => NewReservaProvider(reserves),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,6 +234,7 @@ class FieldDiaWidget extends StatelessWidget {
               trailing: Icon(Icons.keyboard_arrow_down),
               onTap: _pickDate,
             ),
+           myProvider.coincidencia ? Text("Hi ha reserves el mateix dia.") : Text(""),
           ],
         ),
       ),

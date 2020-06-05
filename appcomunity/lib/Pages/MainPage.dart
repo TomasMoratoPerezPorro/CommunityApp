@@ -131,6 +131,7 @@ class PastillaEspai extends StatelessWidget {
 }
 
 class ReservesWidget extends StatelessWidget {
+   List<Reserves> reservasPerLogica;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -160,6 +161,7 @@ class ReservesWidget extends StatelessWidget {
                           return Center(child: Text("Waiting..."));
                         case ConnectionState.active:
                           List<Reserves> reserves = snapshotReserves.data;
+                          reservasPerLogica = reserves;
                           return GridView.count(
                             physics: new NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
@@ -183,7 +185,9 @@ class ReservesWidget extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => NewReservaPage(),
+                        builder: (context) {
+                          return NewReservaPage(reserves: reservasPerLogica);
+                        },
                       ),
                     );
                   },
