@@ -1,9 +1,26 @@
+import 'package:appcomunity/app.dart';
+import 'package:appcomunity/login_flow/auth_state_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:appcomunity/Model/Reserves.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Pages/MainPage.dart';
 
-void main() => runApp(CommunityApp());
+/* void main() => runApp(CommunityApp()); */
+
+void main() {
+  runApp(
+    AuthStateSwitch(
+      app: App(),
+      config: SignInConfig(
+        anonymously: false,
+        withGoogle: false,
+        withFacebook: false,
+      ),
+    ),
+  );
+}
+
+
 class CommunityApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
