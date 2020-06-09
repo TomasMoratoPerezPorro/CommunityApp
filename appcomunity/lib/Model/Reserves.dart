@@ -40,7 +40,7 @@ addReserva(DateTime pickedTime, TimeOfDay time, Espais selectedEspai, int select
 }
 
 Stream<List<Reserves>> reservesSnapshots() {
-  return Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Reserves').snapshots().map((QuerySnapshot query) {
+  return Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Reserves').orderBy('Data_ini', descending: false).snapshots().map((QuerySnapshot query) {
     final List<DocumentSnapshot> docsReserves = query.documents;
     return docsReserves.map((docReserva) => Reserves.fromFirestore(docReserva)).toList();
   });

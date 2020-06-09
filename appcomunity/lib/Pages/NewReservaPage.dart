@@ -7,6 +7,11 @@ import 'package:provider/provider.dart';
 class NewReservaProvider with ChangeNotifier {
   NewReservaProvider(reservesExistents) {
     this.reservesExistents = reservesExistents;
+    coincidencia = comprobarDisponibilitat();
+    if (coincidencia) {
+      this.coincidencia = coincidencia;
+      notifyListeners();
+    }
   }
 
   DateTime pickedDate = DateTime.now();
@@ -15,10 +20,15 @@ class NewReservaProvider with ChangeNotifier {
   int selectedDuracio = 1;
   List<Reserves> reservesExistents;
   bool coincidencia = false;
+  bool faltaEspai = false;
 
   void setDuracio(int duracio) {
     this.selectedDuracio = duracio;
     notifyListeners();
+  }
+
+  setFaltaEspai(bool flag){
+    this.faltaEspai=flag;
   }
 
   void setDate(DateTime date) {
@@ -26,11 +36,10 @@ class NewReservaProvider with ChangeNotifier {
     this.pickedDate = date;
     notifyListeners();
     coincidencia = comprobarDisponibilitat();
-    if(coincidencia){
-      this.coincidencia=coincidencia;
+    if (coincidencia) {
+      this.coincidencia = coincidencia;
       notifyListeners();
     }
-
   }
 
   void setTime(TimeOfDay hora) {
@@ -57,6 +66,16 @@ class NewReservaProvider with ChangeNotifier {
     }
     return false;
   }
+
+  bool comprobarEspai() {
+    if (this.selectedEspai == null) {
+      this.faltaEspai = true;
+      notifyListeners();
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 class NewReservaPage extends StatelessWidget {
@@ -70,7 +89,10 @@ class NewReservaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     print("OBJECTE RESERVAS PUSH: ${reserves[0].dataIni}");
     return Scaffold(
-        appBar: AppBar(title: Text('New Reserva')),
+        appBar: AppBar(
+          title: Text('New Reserva'),
+          backgroundColor: mainColor,
+        ),
         body: FormNewReservaWidget(
           reserves: reserves,
         ));
@@ -111,12 +133,32 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myProvider = Provider.of<NewReservaProvider>(context, listen: false);
-    return RaisedButton(
-      child: Text("Submit"),
-      onPressed: () {
-        myProvider.saveReserva();
-      },
+    final myProvider = Provider.of<NewReservaProvider>(context, listen: true);
+    return Column(
+      children: <Widget>[
+        myProvider.faltaEspai ? AlertCoincidencia(fraseAlert: "Selecciona un espai !") : Text(""),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: RaisedButton(
+            child: Container(
+              margin: EdgeInsets.all(10),
+              width: 200,
+              child: Text(
+                "RESERVA ARA",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            color: mainColor,
+            onPressed: () {
+              if (myProvider.comprobarEspai()) {
+                myProvider.saveReserva();
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -131,9 +173,9 @@ class FieldDuracioWidget extends StatelessWidget {
     final myProvider = Provider.of<NewReservaProvider>(context, listen: true);
     Color getColor(int i) {
       if (myProvider.selectedDuracio == i) {
-        return Colors.red;
+        return mainColor;
       } else {
-        return Colors.grey[350];
+        return secondaryColor;
       }
     }
 
@@ -176,26 +218,49 @@ class FieldHoraWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final myProvider = Provider.of<NewReservaProvider>(context, listen: true);
     _pickTime() async {
-      TimeOfDay t =
-          await showTimePicker(context: context, initialTime: myProvider.time);
+      TimeOfDay t = await showTimePicker(
+        context: context,
+        initialTime: myProvider.time,
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              primaryColor: mainColor, //Head background
+              accentColor: mainColor, //selection color
+              //dialogBackgroundColor: Colors.white,//Background color
+              colorScheme: ColorScheme.light(primary: mainColor),
+              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            ),
+            child: child,
+          );
+        },
+      );
 
       if (t != null) myProvider.setTime(t);
     }
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text("Selecciona la hora de inici:"),
-            ListTile(
-              title: Text(
-                  "Date: ${myProvider.time.hour}, ${myProvider.time.minute}"),
-              trailing: Icon(Icons.keyboard_arrow_down),
-              onTap: _pickTime,
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: Text("Selecciona la hora de inici:"),
+                margin: EdgeInsets.all(10),
+              ),
+              ListTile(
+                title: Text(
+                  "Date: ${myProvider.time.hour}, ${myProvider.time.minute}",
+                  style:
+                      TextStyle(color: mainColor, fontWeight: FontWeight.bold),
+                ),
+                trailing: Icon(Icons.keyboard_arrow_down),
+                onTap: _pickTime,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -216,25 +281,85 @@ class FieldDiaWidget extends StatelessWidget {
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
         initialDate: myProvider.pickedDate,
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              primaryColor: mainColor, //Head background
+              accentColor: mainColor, //selection color
+              //dialogBackgroundColor: Colors.white,//Background color
+              colorScheme: ColorScheme.light(primary: mainColor),
+              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            ),
+            child: child,
+          );
+        },
       );
 
       if (date != null) myProvider.setDate(date);
     }
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: Text("Selecciona el dia:"),
+                margin: EdgeInsets.all(10),
+              ),
+              ListTile(
+                title: Text(
+                  "Date: ${myProvider.pickedDate.year}, ${myProvider.pickedDate.month}, ${myProvider.pickedDate.day}",
+                  style:
+                      TextStyle(color: mainColor, fontWeight: FontWeight.bold),
+                ),
+                trailing: Icon(Icons.keyboard_arrow_down),
+                onTap: _pickDate,
+              ),
+              myProvider.coincidencia ? AlertCoincidencia(fraseAlert: "Hi ha reserves el mateix dia") : Text(""),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertCoincidencia extends StatelessWidget {
+  const AlertCoincidencia({
+    Key key,
+    @required this.fraseAlert,
+  }) : super(key: key);
+
+  final String fraseAlert;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top:10),
+      height: 30,
+      width: 230,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(3)),
+        color: Colors.red[300],
+      ),
+      child: Center(
+        child: Row(
           children: <Widget>[
-            Text("Selecciona el dia:"),
-            ListTile(
-              title: Text(
-                  "Date: ${myProvider.pickedDate.year}, ${myProvider.pickedDate.month}, ${myProvider.pickedDate.day}"),
-              trailing: Icon(Icons.keyboard_arrow_down),
-              onTap: _pickDate,
+            SizedBox(width: 10),
+            Icon(
+              Icons.feedback,
+              size: 14,
+              color: Colors.white,
             ),
-           myProvider.coincidencia ? Text("Hi ha reserves el mateix dia.") : Text(""),
+            SizedBox(width: 10),
+            Text(
+              this.fraseAlert,
+              style: TextStyle(color: Colors.white),
+            ),
           ],
         ),
       ),
@@ -249,19 +374,30 @@ class FieldEspaiWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Padding(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "Selecciona el espai:",
-            textAlign: TextAlign.left,
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Card(
+            child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(10),
+                child: Text(
+                  "Selecciona el espai:",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              LlistaEspaisWidget(),
+            ],
           ),
-          LlistaEspaisWidget(),
-        ],
+        )),
       ),
-    ));
+    );
   }
 }

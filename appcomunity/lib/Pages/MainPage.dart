@@ -185,8 +185,12 @@ class ReservesWidget extends StatelessWidget {
                             shrinkWrap: true,
                             crossAxisCount: 2,
                             children: <Widget>[
+                            
                               for (int i = 0; i < reserves.length; i++)
-                                ReservaItem(reserva: reserves[i]),
+                                if (reserves[i]
+                                    .dataFinal
+                                    .isAfter(DateTime.now()))
+                                  ReservaItem(reserva: reserves[i]),
                             ],
                           );
 
@@ -240,8 +244,17 @@ class ReservaItem extends StatelessWidget {
     return updatedDt;
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
+    Color checkTodayColor(DateTime dataReserva){
+      if(dataReserva.isAfter(DateTime.now().add(Duration(days: 1, hours: 0, minutes: 0)))){
+        return Colors.orange[200];
+      }else{
+        return mainColor;
+      }
+    }
     return Card(
       color: secondaryColor,
       child: Column(
@@ -282,11 +295,11 @@ class ReservaItem extends StatelessWidget {
                 debugPrint(nomUsuari);
                 debugPrint(reserva.usuari.path.toString());
                 return Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: Alignment.center,
                   child: Container(
-                    margin: EdgeInsets.only(bottom: 10, left: 10),
+                    margin: EdgeInsets.only(bottom: 10),
                     child: Text(
-                      nomUsuari,
+                      nomUsuari.toUpperCase(),
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -297,24 +310,53 @@ class ReservaItem extends StatelessWidget {
               }
             },
           ),
-          Container(
-            margin: EdgeInsets.only(left:10),
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.calendar_today,size: 18,),
-                SizedBox(width:10),
-                Text(formatDate(reserva.dataIni)),
-              ],
+          Expanded(
+            child: Container(
+              color: checkTodayColor(reserva.dataIni),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(width: 10),
+                  Icon(
+                    Icons.calendar_today,
+                    color: Colors.white,
+                    size: 14,
+                  ),
+                  SizedBox(width: 10),
+                  Text(formatDate(reserva.dataIni),
+                      style: TextStyle(
+                          fontSize: 12,
+                          // fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                ],
+              ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left:10),
-            child: Row(
-              children: <Widget>[
-                Icon(Icons.access_time,size: 18,),
-                SizedBox(width:10),
-                Text(formatTime(reserva.dataIni)),
-              ],
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: checkTodayColor(reserva.dataIni),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.zero,
+                    topRight: Radius.zero,
+                    bottomLeft: Radius.circular(3),
+                    bottomRight: Radius.circular(3)),
+              ),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(width: 10),
+                  Icon(
+                    Icons.access_time,
+                    size: 14,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 10),
+                  Text(formatTime(reserva.dataIni),
+                      style: TextStyle(
+                          fontSize: 12,
+                          // fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                ],
+              ),
             ),
           ),
         ],

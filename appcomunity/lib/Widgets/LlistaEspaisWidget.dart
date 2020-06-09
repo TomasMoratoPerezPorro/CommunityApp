@@ -1,7 +1,11 @@
 import 'package:appcomunity/Pages/NewReservaPage.dart';
 import 'package:flutter/material.dart';
 import 'package:appcomunity/Model/Espais.dart';
+import 'package:appcomunity/Pages/MainPage.dart';
 import 'package:provider/provider.dart';
+
+final Color mainColor = Color(0xFFff7f5c);
+final Color secondaryColor = Color(0xFFfff7f5);
 
 class LlistaEspaisWidget extends StatelessWidget {
   const LlistaEspaisWidget({
@@ -51,39 +55,34 @@ class PastillaEspai extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myProvider = Provider.of<NewReservaProvider>(context, listen: true);
-     Color getColor(){
-       if(myProvider.selectedEspai==this.espai){
-         return Colors.red;
-       }else{
-         return Colors.grey[350];
-       }
-     } 
+    Color getColor() {
+      if (myProvider.selectedEspai == this.espai) {
+        return mainColor;
+      } else {
+        return secondaryColor;
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.all(10),
       child: InkWell(
-        onTap: (){
+        onTap: () {
           myProvider.setEspai(espai);
+           myProvider.setFaltaEspai(false);
         },
         child: Card(
           color: getColor(),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.all(10),
-                height: 50,
-                width: 50,
-                decoration:
-                    BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-                child: Icon(Icons.home),
-              ),
+              PastillaEspaiIcona(espai: espai.nom),
               Text(espai.nom),
               Container(
                 margin: EdgeInsets.only(left: 200),
                 height: 70,
                 width: 10,
                 decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: mainColor,
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(5),
                         bottomRight: Radius.circular(5))),
