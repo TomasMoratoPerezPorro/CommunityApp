@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+final Color secondaryColor = Color(0xFFfff7f5);
+
 class SignInButton extends StatelessWidget {
+  
   final String text;
   final Color color;
   final Function onPressed;
@@ -22,7 +25,7 @@ class SignInButton extends StatelessWidget {
         style: TextStyle(color: Colors.white, fontSize: 16),
       ),
       color: color,
-      disabledColor: Colors.grey,
+      disabledColor: Colors.grey[400],
       padding: EdgeInsets.all(16),
     );
   }

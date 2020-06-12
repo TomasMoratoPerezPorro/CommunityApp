@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+final Color mainColor = Color(0xFFff7f5c);
+final Color secondaryColor = Color(0xFFfff7f5);
 
 class AuthPageTitle extends StatelessWidget {
   final String text;
@@ -12,7 +14,7 @@ class AuthPageTitle extends StatelessWidget {
         this.text,
         style: TextStyle(
           fontSize: 40,
-          color: Theme.of(context).primaryColor,
+          color: mainColor,
           fontWeight: FontWeight.w300,
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:appcomunity/Model/Espais.dart';
 import 'package:appcomunity/Model/Reserves.dart';
 import 'package:appcomunity/Widgets/LlistaEspaisWidget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,9 +54,9 @@ class NewReservaProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void saveReserva() {
+  void saveReserva(String userId) {
     addReserva(
-        this.pickedDate, this.time, this.selectedEspai, this.selectedDuracio);
+        this.pickedDate, this.time, this.selectedEspai, this.selectedDuracio, userId);
   }
 
   bool comprobarDisponibilitat() {
@@ -87,6 +88,7 @@ class NewReservaPage extends StatelessWidget {
   final List<Reserves> reserves;
   @override
   Widget build(BuildContext context) {
+    
     print("OBJECTE RESERVAS PUSH: ${reserves[0].dataIni}");
     return Scaffold(
         appBar: AppBar(
@@ -133,6 +135,7 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseUser user = Provider.of<FirebaseUser>(context);
     final myProvider = Provider.of<NewReservaProvider>(context, listen: true);
     return Column(
       children: <Widget>[
@@ -152,7 +155,7 @@ class SubmitButton extends StatelessWidget {
             color: mainColor,
             onPressed: () {
               if (myProvider.comprobarEspai()) {
-                myProvider.saveReserva();
+                myProvider.saveReserva(user.uid);
                 Navigator.of(context).pop();
               }
             },

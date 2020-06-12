@@ -1,10 +1,12 @@
 import 'package:appcomunity/Model/Espais.dart';
 import 'package:appcomunity/Model/Reserves.dart';
 import 'package:appcomunity/Pages/NewReservaPage.dart';
+import 'package:appcomunity/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 final Color mainColor = Color(0xFFff7f5c);
 final Color secondaryColor = Color(0xFFfff7f5);
@@ -12,14 +14,19 @@ final Color secondaryColor = Color(0xFFfff7f5);
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    FirebaseUser user = Provider.of<FirebaseUser>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("CommunityApp"),
         backgroundColor: mainColor,
         actions: <Widget>[
           // action button
-          IconButton(
-            icon: Icon(Icons.verified_user),
+          RaisedButton(
+            color: mainColor,
+            child: Text(
+              'Logout',
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
               FirebaseAuth.instance.signOut();
             },
@@ -29,9 +36,72 @@ class MainPage extends StatelessWidget {
       body: Container(
         child: ListView(
           children: <Widget>[
+            WelcomeUserWidget(user: user),
             EspaisWidget(),
             ReservesWidget(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class WelcomeUserWidget extends StatelessWidget {
+  const WelcomeUserWidget({
+    Key key,
+    @required this.user,
+  }) : super(key: key);
+
+  final FirebaseUser user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Card(
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 20, bottom: 10),
+                child: Text(
+                  "Benvingut",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: FutureBuilder<DocumentSnapshot>(
+                    future: Firestore.instance
+                        .collection('Usuaris')
+                        .document(user.uid)
+                        .get(),
+                    builder:
+                        (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      final DocumentSnapshot doc = snapshot.data;
+                      Map<String, dynamic> fields = doc.data;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.account_circle),
+                          SizedBox(width: 5),
+                          Text(fields['Name'],
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(width: 30),
+                          Text(fields['Pis'],
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      );
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -212,7 +282,11 @@ class ReservesWidget extends StatelessWidget {
                     },
                   ),
                 ),
-                FloatingActionButton(
+                SizedBox(height: 15),
+                FloatingActionButton.extended(
+                  label: Text('Reserva Ara'),
+                  icon: Icon(Icons.add),
+                  backgroundColor: mainColor,
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -222,8 +296,8 @@ class ReservesWidget extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Icon(Icons.add),
-                )
+                ),
+                SizedBox(height: 31)
               ],
             ),
           ),

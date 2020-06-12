@@ -1,3 +1,4 @@
+import 'package:appcomunity/Model/DatabaseService.dart';
 import 'package:appcomunity/login_flow/auth_state_switch.dart';
 import 'package:appcomunity/login_flow/pages/signup_page.dart';
 import 'package:appcomunity/login_flow/widgets/auth_page_title.dart';
@@ -12,12 +13,15 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+final Color mainColor = Color(0xFFff7f5c);
+final Color secondaryColor = Color(0xFFfff7f5);
+
 class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _SignInPageBody(),
-      backgroundColor: Colors.white,
+      backgroundColor: secondaryColor,
     );
   }
 }
@@ -130,10 +134,12 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
   void _createUserWithEmailAndPassword(EmailAndPassword credentials) async {
     try {
       showLoading(true);
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      AuthResult result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: credentials.email,
         password: credentials.password,
       );
+      FirebaseUser user = result.user;
+      await DatabaseService(uid: user.uid).updateUserData(credentials.getterUserName, credentials.getterPis);
     } on PlatformException catch (e) {
       _showError(e);
     } finally {
@@ -147,7 +153,7 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
       return Center(child: CircularProgressIndicator());
     }
     final SignInConfig config = Provider.of<SignInConfig>(context);
-    final primaryColor = Theme.of(context).primaryColor;
+  //  final primaryColor = Theme.of(context).primaryColor;
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -162,8 +168,9 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
               SizedBox(height: 16),
               SignInTextField(SignInTextFieldType.password, _ctrlPassword),
               SizedBox(height: 32),
+              
               SignInButton(
-                color: primaryColor,
+                color: mainColor,
                 onPressed:
                     signButtonActive ? _signInWithEmailAndPassword : null,
               ),
@@ -181,7 +188,7 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
                   SizedBox(width: 16),
                   FlatButton(
                     child: Text('Sign Up'),
-                    textColor: primaryColor,
+                    textColor: mainColor,
                     onPressed: () async {
                       EmailAndPassword result =
                           await Navigator.of(context).push(
@@ -222,7 +229,7 @@ class _SignInPageBodyState extends State<_SignInPageBody> {
                 FlatButton(
                   child: Text(
                     'Sign in anonymously',
-                    style: TextStyle(color: primaryColor),
+                    style: TextStyle(color: mainColor),
                   ),
                   onPressed: _signInAnonymously,
                 ),

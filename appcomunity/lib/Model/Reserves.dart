@@ -25,12 +25,12 @@ class Reserves {
   }
 }
 
-addReserva(DateTime pickedTime, TimeOfDay time, Espais selectedEspai, int selectedDuracio) {
+addReserva(DateTime pickedTime, TimeOfDay time, Espais selectedEspai, int selectedDuracio, String userId) {
   
   DateTime dataIni = DateTime(pickedTime.year, pickedTime.month, pickedTime.day, time.hour, time.minute);
   
   final DocumentReference postRefEspai = Firestore.instance.document('Comunitat/ePxrAIn3mpLvfJBvBKtZ/Espais/${selectedEspai.id}');
-  final DocumentReference postRefUsuari = Firestore.instance.document('Usuaris/rBusSKT1iicw0I2rUrhw');
+  final DocumentReference postRefUsuari = Firestore.instance.document('Usuaris/$userId');
   Firestore.instance.collection('Comunitat').document('ePxrAIn3mpLvfJBvBKtZ').collection('Reserves').add({
     'Data_ini': Timestamp.fromDate(dataIni),
     'Data_final': Timestamp.fromDate(dataIni.add(Duration(days: 0, hours: selectedDuracio, minutes: 0))),
