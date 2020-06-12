@@ -1,6 +1,7 @@
 import 'package:appcomunity/Model/Espais.dart';
 import 'package:appcomunity/Model/Reserves.dart';
 import 'package:appcomunity/Pages/NewReservaPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,15 @@ class MainPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("CommunityApp"),
         backgroundColor: mainColor,
+        actions: <Widget>[
+          // action button
+          IconButton(
+            icon: Icon(Icons.verified_user),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            },
+          ),
+        ],
       ),
       body: Container(
         child: ListView(
@@ -185,7 +195,6 @@ class ReservesWidget extends StatelessWidget {
                             shrinkWrap: true,
                             crossAxisCount: 2,
                             children: <Widget>[
-                            
                               for (int i = 0; i < reserves.length; i++)
                                 if (reserves[i]
                                     .dataFinal
@@ -244,17 +253,17 @@ class ReservaItem extends StatelessWidget {
     return updatedDt;
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
-    Color checkTodayColor(DateTime dataReserva){
-      if(dataReserva.isAfter(DateTime.now().add(Duration(days: 1, hours: 0, minutes: 0)))){
+    Color checkTodayColor(DateTime dataReserva) {
+      if (dataReserva.isAfter(
+          DateTime.now().add(Duration(days: 1, hours: 0, minutes: 0)))) {
         return Colors.orange[200];
-      }else{
+      } else {
         return mainColor;
       }
     }
+
     return Card(
       color: secondaryColor,
       child: Column(
